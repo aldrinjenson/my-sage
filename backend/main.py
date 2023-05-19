@@ -35,10 +35,9 @@ async def upload_file(file: UploadFile = File(...)):
 
 
 @app.post("/train")
-async def train_model(filename: str, urls: list, userId: str):
-    print(filename, urls, userId)
-    # response = await ingest_docs(filename, urls, userId)
-    return {"response": "vector store created"}
+async def train_model(body: dict):
+    print(body)
+    return {"message": "JSON body printed successfully"}
 
 # if __name__ == "__main__":
 #     import uvicorn

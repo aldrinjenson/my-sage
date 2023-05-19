@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { makePostRequest } from "../utils";
 
 const VALID_FILES = [".pdf", ".txt"];
 const endsWithValidExtension = (fileName) => {
@@ -29,9 +30,20 @@ const uploadFile = async (file, userId) => {
   }
 };
 
-const uploadDataAndTrain = async (file, urlArray, userId) => {
+const uploadDataAndTrain = async (file, urls, userId) => {
   const fileName = file.name;
   console.log(fileName);
+  makePostRequest("/train", {
+    fileName,
+    urls,
+    userId,
+  })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 const Dashboard = () => {
