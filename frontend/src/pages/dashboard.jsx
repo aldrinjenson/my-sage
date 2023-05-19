@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from "react";
+import { FaClipboard } from "react-icons/fa";
 import { endsWithValidExtension, makePostRequest, uploadFile } from "../utils";
 
 const VALID_FILES = [".pdf", ".txt"];
@@ -16,6 +17,14 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [botName, setBotName] = useState("");
   const [botInitialDescription, setBotInitialDescription] = useState("");
+  const [embedData, setEmbedData] = useState("");
+  const [userCopied, setUserCopied] = useState(false);
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(embedData);
+    setUserCopied(true);
+    setTimeout(() => setUserCopied(false), 2000);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,6 +70,13 @@ const Dashboard = () => {
         botInitialDescription,
       });
       console.log(res);
+      setEmbedData(
+        `<script defer src="http://localhost:3000/chattemplate.js"></script>
+    <script
+      defer
+      src="http://localhost:3000/api/chatscriptExtra?id=1234"
+    ></script>`
+      );
     } catch (err) {
       console.error(err);
     }
@@ -168,6 +184,26 @@ const Dashboard = () => {
             Create Bot
           </button>
         </form>
+        {embedData?.length ? (
+          <div className='border border-gray-300 rounded p-4'>
+            {userCopied && (
+              <p className='text-xs text-green-500 mt-2'>
+                Code copied to clipboard!
+              </p>
+            )}
+            <div className='relative'>
+              <pre className='overflow-auto whitespace-pre-line text-sm'>
+                {embedData}
+              </pre>
+              <button
+                className='absolute top-2 right-2 text-gray-500 focus:outline-none'
+                onClick={copyToClipboard}
+              >
+                <FaClipboard size={16} />
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );
