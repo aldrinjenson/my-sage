@@ -140,6 +140,7 @@ const Dashboard = () => {
               <input
                 type='text'
                 name='botname'
+                required
                 value={botName}
                 onChange={(e) => setBotName(e.target.value)}
                 className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
@@ -152,6 +153,7 @@ const Dashboard = () => {
               <input
                 type='text'
                 name='botdesc'
+                required
                 value={botInitialDescription}
                 onChange={(e) => setBotInitialDescription(e.target.value)}
                 className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'

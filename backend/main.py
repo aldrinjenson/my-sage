@@ -39,6 +39,12 @@ async def train_model(body: dict):
     print(body)
     return {"message": "JSON body printed successfully"}
 
+
+@app.post('/chat')
+async def chat(body: dict):
+    print(body)
+    return {'response': 'hello back'}
+
 # if __name__ == "__main__":
 #     import uvicorn
 #     uvicorn.run(app, host="0.0.0.0", port=8000)
