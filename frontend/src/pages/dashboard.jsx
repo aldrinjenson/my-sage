@@ -1,50 +1,8 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
-import { makePostRequest } from "../utils";
+import { endsWithValidExtension, makePostRequest, uploadFile } from "../utils";
 
 const VALID_FILES = [".pdf", ".txt"];
-const endsWithValidExtension = (fileName) => {
-  const extension = fileName.split(".").pop();
-  return VALID_FILES.includes("." + extension);
-};
-
-const API_URL = "http://localhost:8000";
-
-const uploadFile = async (file, userId) => {
-  const formData = new FormData();
-  formData.append("file", file);
-
-  try {
-    const response = await fetch(`${API_URL}/upload`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log("File uploaded successfully:", data);
-    } else {
-      console.log("Error uploading file:", response.status);
-    }
-  } catch (error) {
-    console.log("Error:", error);
-  }
-};
-
-const uploadDataAndTrain = async (file, urls, userId) => {
-  const fileName = file.name;
-  console.log(fileName);
-  makePostRequest("/train", {
-    fileName,
-    urls,
-    userId,
-  })
-    .then((res) => {
-      console.log(res);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-};
 
 const Dashboard = () => {
   const [urls, setUrls] = useState({
@@ -56,6 +14,8 @@ const Dashboard = () => {
   const [files, setFiles] = useState([]);
   const [formError, setFormError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [botName, setBotName] = useState("");
+  const [botInitialDescription, setBotInitialDescription] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,18 +24,17 @@ const Dashboard = () => {
 
   const handleFileInputChange = (e) => {
     console.log(e.target.files);
-    setFiles(e.target.files);
+    setFiles(Array.from(e.target.files));
   };
 
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
+  const handleUploadFile = async () => {
     const errors = [];
     if (
       Object.values(urls).some((url) => url.length && !url.startsWith("http"))
     ) {
       errors.push("Please enter valid URLS");
     }
-    if (Array.from(files).some((file) => !endsWithValidExtension(file.name))) {
+    if (files.some((file) => !endsWithValidExtension(file.name))) {
       errors.push(`Currently, support is only for ${VALID_FILES} files.`);
     }
 
@@ -85,79 +44,126 @@ const Dashboard = () => {
       setFormError(errors.join("\n"));
       return;
     }
-    const urlArray = Object.values(urls).filter((url) => url.length);
+    setFormError("");
 
     await uploadFile(files[0], userId);
-    await uploadDataAndTrain(files[0], urlArray, userId);
+  };
 
-    // Process the form data
-    // Add your logic here
-
-    // Reset the form
-    // setUrls({ url1: "", url2: "", url3: "" });
-    // setFiles([]);
-    setFormError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const urlArray = Object.values(urls).filter((url) => url.length);
+    try {
+      const res = await makePostRequest("/train", {
+        filename: files[0].name,
+        urls: urlArray,
+        userId,
+        botName,
+        botInitialDescription,
+      });
+      console.log(res);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <div className='flex items-center justify-center h-screen bg-gray-900'>
       <div className='bg-white rounded-lg p-8'>
-        <h2 className='text-2xl text-gray-900 font-bold mb-4'>
-          Add Data sources
-        </h2>
-        <form className='space-y-4' onSubmit={handleFormSubmit}>
-          {formError && (
-            <p className='text-red-500 mb-4' style={{ whiteSpace: "pre-line" }}>
-              {formError}
-            </p>
-          )}
-          <div>
-            <label className='block text-gray-900 font-medium mb-2'>
-              URL 1
-            </label>
-            <input
-              type='text'
-              name='url1'
-              value={urls.url1}
-              onChange={handleInputChange}
-              className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
-              required
-            />
+        <form className='space-y-4' onSubmit={handleSubmit}>
+          <div id='part1'>
+            <h2 className='text-2xl text-gray-900 font-bold mb-4'>
+              Add Data sources
+            </h2>
+            {formError && (
+              <p
+                className='text-red-500 mb-4'
+                style={{ whiteSpace: "pre-line" }}
+              >
+                {formError}
+              </p>
+            )}
+            <div>
+              <label className='block text-gray-900 font-medium mb-2'>
+                URL 1
+              </label>
+              <input
+                type='text'
+                name='url1'
+                value={urls.url1}
+                onChange={handleInputChange}
+                className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
+                required
+              />
+            </div>
+            <div>
+              <input
+                type='text'
+                name='url2'
+                value={urls.url2}
+                onChange={handleInputChange}
+                className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
+              />
+            </div>
+            <div>
+              <input
+                type='text'
+                name='url3'
+                value={urls.url3}
+                onChange={handleInputChange}
+                className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
+              />
+            </div>
+            <div>
+              <label className='block text-gray-900 font-medium mb-2'>
+                Select Files
+              </label>
+              <input
+                type='file'
+                onChange={handleFileInputChange}
+                className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
+              />
+            </div>
           </div>
-          <div>
-            <input
-              type='text'
-              name='url2'
-              value={urls.url2}
-              onChange={handleInputChange}
-              className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
-            />
-          </div>
-          <div>
-            <input
-              type='text'
-              name='url3'
-              value={urls.url3}
-              onChange={handleInputChange}
-              className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
-            />
-          </div>
-          <div>
-            <label className='block text-gray-900 font-medium mb-2'>
-              Select Files
-            </label>
-            <input
-              type='file'
-              onChange={handleFileInputChange}
-              className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
-            />
+          <button
+            disabled={isLoading}
+            className='bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300'
+          >
+            Upload files
+          </button>
+          <br />
+          <div id='part2'>
+            <h2 className='text-2xl text-gray-900 font-bold mb-4'>
+              Customize chatbot
+            </h2>
+            <div>
+              <label htmlFor='botname'>Choose Your Bot Name</label>
+              <input
+                type='text'
+                name='botname'
+                value={botName}
+                onChange={(e) => setBotName(e.target.value)}
+                className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
+              />
+            </div>
+            <div>
+              <label htmlFor='botdesc'>
+                Choose Initial Description for Bot{" "}
+              </label>
+              <input
+                type='text'
+                name='botdesc'
+                value={botInitialDescription}
+                onChange={(e) => setBotInitialDescription(e.target.value)}
+                className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
+              />
+            </div>
           </div>
           <button
             type='submit'
             disabled={isLoading}
             className='bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300'
           >
-            Upload and Process
+            Create Bot
           </button>
         </form>
       </div>
