@@ -30,15 +30,19 @@ export default async function getchatscript(req, res) {
   const querySnapshot = await botsRef.where("createdUser", "==", userRef).get();
 
   if (querySnapshot.empty) {
+    console.log("empty bro");
+
     return res.send("Invalid token passed");
   }
   const botDoc = querySnapshot.docs[0];
+  console.log(botDoc.data());
 
   const {
-    name: usersBotname,
-    introMessage: usersBotDescription,
+    botName: usersBotname,
+    botInitialDescription: usersBotDescription,
     personality,
   } = botDoc.data();
+  console.log(usersBotname, usersBotDescription);
 
   try {
     const filePath = path.join(

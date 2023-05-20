@@ -1,8 +1,10 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from chatHandler import handleChat
+from ingest import ingest_docs
 import time
 import os
+
 
 app = FastAPI()
 MODEL_DIRS = "db"
@@ -34,7 +36,7 @@ async def get_status():
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     contents = await file.read()
-    file_path = f"${UPLOAD_DIR}/{file.filename}"
+    file_path = f"{UPLOAD_DIR}/{file.filename}"
     with open(file_path, "wb") as f:
         f.write(contents)
     return {"filename": file.filename, "status": "uploaded"}
@@ -50,7 +52,7 @@ async def train_model(body: dict):
     botInitialDescription = body['botInitialDescription']
 
     print(urls, filename, userId)
-    file_path = f"{UPLOAD_DIR}/{filename}"
+    file_path = f"./{UPLOAD_DIR}/{filename}"
     result = ingest_docs(urls, file_path, userId)
 
     return {"message": result}

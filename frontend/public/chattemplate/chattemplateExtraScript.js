@@ -89,4 +89,4 @@ const cleanUp = (usersInitialMsg, usersBotName) => {
   botIsTypingMsg.classList.add("opa-hidden");
 };
 
-cleanUp("INITIAL_DESCRIPTION", "BOT_NAME");
+cleanUp(`INITIAL_DESCRIPTION`, "BOT_NAME");

@@ -3,6 +3,9 @@ import { useState, useEffect } from "react";
 import { FaClipboard } from "react-icons/fa";
 import { endsWithValidExtension, makePostRequest, uploadFile } from "../utils";
 import useAuth from "../hooks/useAuth";
+import {} from "@firebase/firestore";
+import { addDoc, collection, getFirestore } from "@firebase/firestore";
+import { firestore } from "../services/firebase";
 
 const VALID_FILES = [".pdf", ".txt"];
 const botId = "lxRQjIH7Zx5a61dHcsvK";
@@ -24,6 +27,9 @@ const Dashboard = () => {
   const [embedData, setEmbedData] = useState("");
   const [userCopied, setUserCopied] = useState(false);
   const userId = user?.uid;
+
+  const db = getFirestore();
+  const botsCollectionRef = collection(db, "bots");
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(embedData);
@@ -62,14 +68,21 @@ const Dashboard = () => {
     e.preventDefault();
     const urlArray = Object.values(urls).filter((url) => url.length);
     try {
-      const res = await makePostRequest("/train", {
+      const userRef = firestore.doc(`users/${userId}`);
+      const newBot = {
         filename: files[0].name,
         urls: urlArray,
         userId,
         botName,
         botInitialDescription,
-      });
+        personality: "",
+        createdUser: userRef,
+      };
+      const res = await makePostRequest("/train", newBot);
       console.log(res);
+      const addedBot = await addDoc(botsCollectionRef, newBot);
+      console.log({ addedBot });
+
       setEmbedData(
         `<script defer src="http://localhost:3000/chattemplate.js"></script>
     <script
