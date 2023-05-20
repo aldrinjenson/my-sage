@@ -1,9 +1,11 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from ingest import ingest_docs
+from chatHandler import handleChat
 import time
+import os
 
 app = FastAPI()
+MODEL_DIRS = "db"
 UPLOAD_DIR = "uploads"
 if not os.path.exists(UPLOAD_DIR):
     os.makedirs(UPLOAD_DIR)
@@ -49,16 +51,20 @@ async def train_model(body: dict):
 
     print(urls, filename, userId)
     file_path = f"{UPLOAD_DIR}/{filename}"
-    ingest_docs(urls, file_path, userId)
+    result = ingest_docs(urls, file_path, userId)
 
-    return {"message": "JSON body printed successfully"}
+    return {"message": result}
 
 
 @app.post('/chat')
 async def chat(body: dict):
+    userId = body['id']
+    query = body['message']
     print(body)
-    time.sleep(2)
-    return {'response': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint a perspiciatis voluptas delectus doloribus ipsum culpa eligendi temporibus. Reiciendis, sed. Possimus eius unde et, laudantium officia ratione sint cupiditate voluptas!'}
+
+    modelPath = 'db'
+    response = handleChat(modelPath, query)
+    return {'response': response}
 
 
 # if __name__ == "__main__":

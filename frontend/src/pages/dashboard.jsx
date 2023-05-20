@@ -5,6 +5,7 @@ import { endsWithValidExtension, makePostRequest, uploadFile } from "../utils";
 import useAuth from "../hooks/useAuth";
 
 const VALID_FILES = [".pdf", ".txt"];
+const botId = "lxRQjIH7Zx5a61dHcsvK";
 
 const Dashboard = () => {
   const [urls, setUrls] = useState({
@@ -35,11 +36,6 @@ const Dashboard = () => {
     setUrls((prevUrls) => ({ ...prevUrls, [name]: value }));
   };
 
-  const handleFileInputChange = (e) => {
-    console.log(e.target.files);
-    setFiles(Array.from(e.target.files));
-  };
-
   const handleUploadFile = async () => {
     const errors = [];
     if (
@@ -51,14 +47,12 @@ const Dashboard = () => {
       errors.push(`Currently, support is only for ${VALID_FILES} files.`);
     }
 
-    // Display form errors, if any
     if (errors.length > 0) {
       console.log(errors.join("\n"));
       setFormError(errors.join("\n"));
       return;
     }
     setFormError("");
-
     setIsUploading(true);
     await uploadFile(files[0], userId);
     setIsUploading(false);
@@ -87,7 +81,8 @@ const Dashboard = () => {
       console.error(err);
     }
   };
-  console.log(user);
+
+  useEffect(() => {});
 
   return (
     <div className='flex items-center justify-center h-screen bg-gray-900'>
@@ -147,7 +142,7 @@ const Dashboard = () => {
               </label>
               <input
                 type='file'
-                onChange={handleFileInputChange}
+                onChange={(e) => setFiles(Array.from(e.target.files))}
                 className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
               />
             </div>

@@ -26,8 +26,8 @@
   bottom: 56px;
   right: 4px;
   background-color: #f8f8f8;
-  width: 320px;
-  height: 384px;
+  width: 360px;
+  height: 454px;
   border-radius: 8px;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -53,7 +53,7 @@
 #chat-bot .conversation-body {
   padding: 8px 16px;
   overflow-y: scroll;
-  height: 256px;
+  height: 310px;
 }
 
 #chat-bot #initialBotMsg {
@@ -103,4 +103,9 @@
 }
 #chat-bot .opa-hidden {
   opacity: 0;
+}
+
+#chat-bot .message {
+  white-space: pre-line;
+  font-size: small;
 }

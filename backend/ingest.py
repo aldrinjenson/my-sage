@@ -22,6 +22,7 @@ def load_data(urls, filepath):
     print('loaded urls')
 
     pdf_loader = PyPDFLoader(filepath)
+    print("going to load pdfs")
     pdf_docs = pdf_loader.load()
     print('loaded pdfs')
 
@@ -34,7 +35,7 @@ def ingest_docs(urls, filepath, userId):
     if not urls or not filepath or not userId:
         print("parameters whole not passed")
         return
-    print('loading')
+    print('gonna start loading')
     raw_documents = load_data(urls, filepath)
 
     text_splitter = RecursiveCharacterTextSplitter(
@@ -43,6 +44,7 @@ def ingest_docs(urls, filepath, userId):
     )
     documents = text_splitter.split_documents(raw_documents)
 
+    print("creating embeddings")
     embeddings = HuggingFaceEmbeddings(model_name=embeddings_model_name)
     persist_directory = "models/"+userId
     print("Creating vector store")
@@ -51,6 +53,7 @@ def ingest_docs(urls, filepath, userId):
     db.persist()
     db = None
     print("Done saving")
+    return "Done"
 
 
 if __name__ == "__main__":
