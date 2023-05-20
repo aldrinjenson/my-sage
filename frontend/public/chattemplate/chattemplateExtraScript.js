@@ -3,6 +3,7 @@ const conversation = document.querySelector(".conversation");
 const closeButton = document.querySelector(".close-button");
 const sendButton = document.getElementById("send-button");
 const conversationBody = document.querySelector(".conversation-body");
+const input = document.querySelector(".conversation-footer input");
 
 fab.addEventListener("click", () => {
   conversation.classList.remove("hidden");
@@ -12,12 +13,12 @@ closeButton.addEventListener("click", () => {
   conversation.classList.add("hidden");
 });
 
-sendButton.addEventListener("click", () => {
-  sendMessage();
+sendButton.addEventListener("click", sendMessage);
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") sendMessage();
 });
 
 function sendMessage() {
-  const input = document.querySelector(".conversation-footer input");
   const userMessage = input.value.trim();
 
   if (userMessage !== "") {
@@ -44,7 +45,7 @@ function fetchResponse(message) {
     },
     body: JSON.stringify({
       message: message,
-      id: CHAT_ID,
+      id: "CHAT_ID",
     }),
   })
     .then((response) => response.json())

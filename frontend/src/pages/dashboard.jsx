@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaClipboard } from "react-icons/fa";
 import { endsWithValidExtension, makePostRequest, uploadFile } from "../utils";
+import useAuth from "../hooks/useAuth";
 
 const VALID_FILES = [".pdf", ".txt"];
 
@@ -11,7 +12,8 @@ const Dashboard = () => {
     url2: "",
     url3: "",
   });
-  const [userId, setUserId] = useState("1234");
+  // const [userId, setUserId] = useState("1234");
+  const user = useAuth();
   const [files, setFiles] = useState([]);
   const [formError, setFormError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +21,7 @@ const Dashboard = () => {
   const [botInitialDescription, setBotInitialDescription] = useState("");
   const [embedData, setEmbedData] = useState("");
   const [userCopied, setUserCopied] = useState(false);
+  const userId = user?.uid;
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(embedData);
@@ -74,17 +77,21 @@ const Dashboard = () => {
         `<script defer src="http://localhost:3000/chattemplate.js"></script>
     <script
       defer
-      src="http://localhost:3000/api/chatscriptExtra?id=1234"
+      src="http://localhost:3000/api/chatscriptExtra?id=${userId}"
     ></script>`
       );
     } catch (err) {
       console.error(err);
     }
   };
+  console.log(user);
 
   return (
     <div className='flex items-center justify-center h-screen bg-gray-900'>
       <div className='bg-white rounded-lg p-8'>
+        <h2 className='text-4xl text-gray-900 font-bold mb-4'>
+          Hello {user?.displayName}
+        </h2>
         <form className='space-y-4' onSubmit={handleSubmit}>
           <div id='part1'>
             <h2 className='text-2xl text-gray-900 font-bold mb-4'>

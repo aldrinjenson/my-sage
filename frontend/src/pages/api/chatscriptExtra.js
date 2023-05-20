@@ -1,3 +1,4 @@
+import { firestore } from "../../services/firebase";
 import path from "path";
 import fs from "fs";
 
@@ -23,14 +24,21 @@ export default async function getchatscript(req, res) {
   if (!userId) {
     return res.send("Token not passed");
   }
-  if (userId !== "1234") {
+
+  const userRef = firestore.doc(`users/${userId}`);
+  const botsRef = firestore.collection("bots");
+  const querySnapshot = await botsRef.where("createdUser", "==", userRef).get();
+
+  if (querySnapshot.empty) {
     return res.send("Invalid token passed");
   }
+  const botDoc = querySnapshot.docs[0];
 
-  // make database query and get the following data
-  const usersBotname = "InfoBot";
-  const usersBotDescription =
-    "Hello, my name is Bambo. What would you like to know?";
+  const {
+    name: usersBotname,
+    introMessage: usersBotDescription,
+    personality,
+  } = botDoc.data();
 
   try {
     const filePath = path.join(
