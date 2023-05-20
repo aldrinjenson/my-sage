@@ -12,12 +12,13 @@ const Dashboard = () => {
     url2: "",
     url3: "",
   });
-  // const [userId, setUserId] = useState("1234");
   const user = useAuth();
   const [files, setFiles] = useState([]);
   const [formError, setFormError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [botName, setBotName] = useState("");
+  const [botDomain, setBotDomain] = useState("");
   const [botInitialDescription, setBotInitialDescription] = useState("");
   const [embedData, setEmbedData] = useState("");
   const [userCopied, setUserCopied] = useState(false);
@@ -58,7 +59,9 @@ const Dashboard = () => {
     }
     setFormError("");
 
+    setIsUploading(true);
     await uploadFile(files[0], userId);
+    setIsUploading(false);
   };
 
   const handleSubmit = async (e) => {
@@ -112,6 +115,7 @@ const Dashboard = () => {
               <input
                 type='text'
                 name='url1'
+                placeholder='https://en.wikipedia.org/wiki/Maze_Runner_(film_series)'
                 value={urls.url1}
                 onChange={handleInputChange}
                 className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
@@ -123,6 +127,7 @@ const Dashboard = () => {
                 type='text'
                 name='url2'
                 value={urls.url2}
+                placeholder='https://en.wikipedia.org/wiki/Artificial_intelligence'
                 onChange={handleInputChange}
                 className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
               />
@@ -148,8 +153,10 @@ const Dashboard = () => {
             </div>
           </div>
           <button
-            disabled={isLoading}
-            className='bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300'
+            disabled={isUploading}
+            className={`bg-blue-500 ${
+              isUploading && "bg-gray-500"
+            } text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300`}
           >
             Upload files
           </button>
@@ -173,41 +180,67 @@ const Dashboard = () => {
               <label htmlFor='botdesc'>
                 Choose Initial Description for Bot{" "}
               </label>
-              <input
+              <textarea
                 type='text'
                 name='botdesc'
                 required
+                placeholder='Hi, I am the constitute bot. Ask me about Constitution of India'
                 value={botInitialDescription}
                 onChange={(e) => setBotInitialDescription(e.target.value)}
+                className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
+              />
+            </div>
+            <div>
+              <label htmlFor='botdesc'>
+                Your Website domain(The domain where the chatbot will be
+                deployed)
+              </label>
+              <textarea
+                type='text'
+                name='botdomain'
+                required
+                placeholder='example.com'
+                value={botDomain}
+                onChange={(e) => setBotDomain(e.target.value)}
                 className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
               />
             </div>
           </div>
           <button
             type='submit'
-            disabled={isLoading}
-            className='bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300'
+            disabled={isCreating}
+            className={`${
+              isCreating ? "bg-gray-200" : "bg-blue-500"
+            } text-white font-semibold py-2 px-4 rounded hover:bg-blue-600 transition-colors duration-300`}
           >
             Create Bot
           </button>
         </form>
+
         {embedData?.length ? (
-          <div className='border border-gray-300 rounded p-4'>
-            {userCopied && (
-              <p className='text-xs text-green-500 mt-2'>
-                Code copied to clipboard!
-              </p>
-            )}
-            <div className='relative'>
-              <pre className='overflow-auto whitespace-pre-line text-sm'>
-                {embedData}
-              </pre>
-              <button
-                className='absolute top-2 right-2 text-gray-500 focus:outline-none'
-                onClick={copyToClipboard}
-              >
-                <FaClipboard size={16} />
-              </button>
+          <div>
+            <p>Bot is being created..</p>
+            <span>
+              Copy and paste the following script tags to your website to get a
+              custom chatbot working!
+            </span>
+            <div className='border border-gray-300 rounded p-4'>
+              {userCopied && (
+                <p className='text-xs text-green-500 mt-2'>
+                  Code copied to clipboard!
+                </p>
+              )}
+              <div className='relative'>
+                <pre className='overflow-auto whitespace-pre-line text-sm'>
+                  {embedData}
+                </pre>
+                <button
+                  className='absolute top-2 right-2 text-gray-500 focus:outline-none'
+                  onClick={copyToClipboard}
+                >
+                  <FaClipboard size={16} />
+                </button>
+              </div>
             </div>
           </div>
         ) : null}

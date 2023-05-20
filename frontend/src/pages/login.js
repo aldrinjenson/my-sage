@@ -44,7 +44,7 @@ const LoginPage = () => {
 
   return (
     <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100'>
-      <h1 className='text-4xl font-bold mb-6'>Login</h1>
+      <h1 className='text-4xl font-bold mb-6'>Login to My-Sage</h1>
       <button
         onClick={handleGoogleSignIn}
         className='bg-blue-500 text-white rounded-md px-4 py-2 hover:bg-blue-600'

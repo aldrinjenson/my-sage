@@ -24,7 +24,7 @@ const firebaseConfig = {
 
 if (!firebase?.apps?.length) {
   const app = firebase?.initializeApp(firebaseConfig);
-  getAnalytics(app);
+  if (window) getAnalytics(app);
 }
 
 export default firebase;
