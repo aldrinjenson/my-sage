@@ -28,6 +28,7 @@ const generateChatInHtml = () => {
           Hello, my name is infobot. How can I help you?
         </div>
       </div>
+      <div id="botIsTypingMsg">Typing...</div>
       <div class="conversation-footer px-4 py-2 flex items-center justify-between">
         <input type="text" placeholder="Type a message" class="w-3/4 py-2 px-3 rounded border border-gray-300" />
         <i class="fas fa-paper-plane text-blue-500 text-xl cursor-pointer" id="send-button"></i>

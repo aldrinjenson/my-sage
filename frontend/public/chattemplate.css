@@ -37,15 +37,17 @@
   color: #ffffff;
   padding: 8px 16px;
   border-radius: 8px 8px 0 0;
+  /* display: flex;
+  justify-content: space-between; */
 }
 
 #chat-bot #botName {
-  /* Add your styles here */
+  font-size: 20px;
 }
-
 #chat-bot .close-button {
-  font-size: 16px;
+  font-size: 22px;
   cursor: pointer;
+  float: right;
 }
 
 #chat-bot .conversation-body {
@@ -56,7 +58,7 @@
 
 #chat-bot #initialBotMsg {
   background-color: #ffffff;
-  padding: 4px 8px;
+  padding: 4px 8px 4px 0;
   border-radius: 4px;
   margin-bottom: 8px;
 }
@@ -79,4 +81,23 @@
   color: #3b82f6;
   font-size: 16px;
   cursor: pointer;
+}
+#chat-bot .bot-message {
+  text-align: left;
+  background: #cedbce;
+  width: fit-content;
+  padding: 3px 7px;
+  border-radius: 10px;
+}
+#chat-bot .user-message {
+  text-align: right;
+  padding: 3px 7px;
+  border-radius: 10px;
+}
+#chat-bot #botIsTypingMsg {
+  padding-left: 20px;
+  color: #3f3d3d;
+}
+#chat-bot .opa-hidden {
+  opacity: 0;
 }

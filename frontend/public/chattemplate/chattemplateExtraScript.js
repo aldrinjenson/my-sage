@@ -4,6 +4,7 @@ const closeButton = document.querySelector(".close-button");
 const sendButton = document.getElementById("send-button");
 const conversationBody = document.querySelector(".conversation-body");
 const input = document.querySelector(".conversation-footer input");
+const botIsTypingMsg = document.querySelector("#botIsTypingMsg");
 
 fab.addEventListener("click", () => {
   conversation.classList.remove("hidden");
@@ -15,7 +16,9 @@ closeButton.addEventListener("click", () => {
 
 sendButton.addEventListener("click", sendMessage);
 input.addEventListener("keydown", (e) => {
-  if (e.key === "Enter") sendMessage();
+  console.log(e);
+
+  if (e.key === "Enter" && !e.shiftKey) sendMessage();
 });
 
 function sendMessage() {
@@ -36,8 +39,8 @@ function sendMessage() {
 }
 
 function fetchResponse(message) {
+  botIsTypingMsg.classList.remove("opa-hidden");
   const apiUrl = "http://localhost:8000/chat?id=CHAT_ID";
-
   fetch(apiUrl, {
     method: "POST",
     headers: {
@@ -53,24 +56,21 @@ function fetchResponse(message) {
       const botMessage = data.response;
       const botMessageElement = createMessageElement(botMessage, "bot-message");
       conversationBody.appendChild(botMessageElement);
+      conversationBody.scrollTop = conversationBody.scrollHeight;
     })
     .catch((error) => {
       console.log("Error:", error);
+    })
+    .finally(() => {
+      botIsTypingMsg.classList.add("opa-hidden");
+      conversationBody.scrollTop = conversationBody.scrollHeight;
     });
 }
 
 function createMessageElement(message, className) {
   const messageElement = document.createElement("div");
   messageElement.textContent = message;
-  messageElement.classList.add(
-    "message",
-    className,
-    "bg-gray-100",
-    "py-1",
-    "px-2",
-    "rounded",
-    "mb-2"
-  );
+  messageElement.classList.add("message", className);
   return messageElement;
 }
 
@@ -79,6 +79,7 @@ const cleanUp = (usersInitialMsg, usersBotName) => {
   initialBotMsg.innerText = usersInitialMsg;
   const botName = document.querySelector("#botName");
   botName.innerText = usersBotName;
+  botIsTypingMsg.classList.add("opa-hidden");
 };
 
 cleanUp("INITIAL_DESCRIPTION", "BOT_NAME");

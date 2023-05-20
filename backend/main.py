@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-# from ingest import ingest_docs
+import time
 
 app = FastAPI()
 
@@ -43,6 +43,7 @@ async def train_model(body: dict):
 @app.post('/chat')
 async def chat(body: dict):
     print(body)
+    time.sleep(2)
     return {'response': 'hello back'}
 
 # if __name__ == "__main__":
