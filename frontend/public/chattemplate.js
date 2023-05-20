@@ -9,8 +9,9 @@ const generateChatInHtml = () => {
       href="http://localhost:3000/chattemplate.css"
       rel="stylesheet"
     />`;
-
-  const myFab = document.querySelector("#my-fab");
+  const myFab = document.createElement("div");
+  myFab.id = "#my-fab";
+  // const myFab = document.querySelector("#my-fab");
   myFab.innerHTML = `
 <div id="chat-bot">
   <div class="bg-gray-100">
@@ -38,6 +39,7 @@ const generateChatInHtml = () => {
 </div>
 
       `;
+  document.body.append(myFab);
   // var script = document.createElement("script");
   // script.src = "http://localhost:3000/api/chatscriptExtra?id=1234"; // Replace 'script.js' with your script URL
   // script.async = true;

@@ -6,6 +6,8 @@ const conversationBody = document.querySelector(".conversation-body");
 const input = document.querySelector(".conversation-footer input");
 const botIsTypingMsg = document.querySelector("#botIsTypingMsg");
 
+let isMessageLoading = false;
+
 fab.addEventListener("click", () => {
   conversation.classList.remove("hidden");
 });
@@ -16,12 +18,14 @@ closeButton.addEventListener("click", () => {
 
 sendButton.addEventListener("click", sendMessage);
 input.addEventListener("keydown", (e) => {
-  console.log(e);
-
   if (e.key === "Enter" && !e.shiftKey) sendMessage();
 });
 
 function sendMessage() {
+  if (isMessageLoading) {
+    console.log("mesage is loading bro, wait!");
+    return;
+  }
   const userMessage = input.value.trim();
 
   if (userMessage !== "") {
@@ -30,6 +34,7 @@ function sendMessage() {
       "user-message"
     );
     conversationBody.appendChild(userMessageElement);
+    conversationBody.scrollTop = conversationBody.scrollHeight;
 
     input.value = "";
     input.focus();
@@ -40,6 +45,8 @@ function sendMessage() {
 
 function fetchResponse(message) {
   botIsTypingMsg.classList.remove("opa-hidden");
+
+  isMessageLoading = true;
   const apiUrl = "http://localhost:8000/chat?id=CHAT_ID";
   fetch(apiUrl, {
     method: "POST",
@@ -56,7 +63,6 @@ function fetchResponse(message) {
       const botMessage = data.response;
       const botMessageElement = createMessageElement(botMessage, "bot-message");
       conversationBody.appendChild(botMessageElement);
-      conversationBody.scrollTop = conversationBody.scrollHeight;
     })
     .catch((error) => {
       console.log("Error:", error);
@@ -64,6 +70,7 @@ function fetchResponse(message) {
     .finally(() => {
       botIsTypingMsg.classList.add("opa-hidden");
       conversationBody.scrollTop = conversationBody.scrollHeight;
+      isMessageLoading = false;
     });
 }
 

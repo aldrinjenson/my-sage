@@ -88,11 +88,14 @@
   width: fit-content;
   padding: 3px 7px;
   border-radius: 10px;
+  margin-right: 40px;
 }
 #chat-bot .user-message {
   text-align: right;
-  padding: 3px 7px;
+  padding: 10px 7px;
+  padding-right: 0px;
   border-radius: 10px;
+  margin-left: 40px;
 }
 #chat-bot #botIsTypingMsg {
   padding-left: 20px;

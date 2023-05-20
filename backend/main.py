@@ -44,7 +44,8 @@ async def train_model(body: dict):
 async def chat(body: dict):
     print(body)
     time.sleep(2)
-    return {'response': 'hello back'}
+    return {'response': 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Sint a perspiciatis voluptas delectus doloribus ipsum culpa eligendi temporibus. Reiciendis, sed. Possimus eius unde et, laudantium officia ratione sint cupiditate voluptas!'}
+
 
 # if __name__ == "__main__":
 #     import uvicorn
