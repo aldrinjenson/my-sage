@@ -153,6 +153,8 @@ const Dashboard = () => {
             </div>
           </div>
           <button
+            type='button'
+            onClick={handleUploadFile}
             disabled={isUploading}
             className={`bg-blue-500 ${
               isUploading && "bg-gray-500"

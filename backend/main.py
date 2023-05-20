@@ -1,8 +1,12 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
+from ingest import ingest_docs
 import time
 
 app = FastAPI()
+UPLOAD_DIR = "uploads"
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
 
 # CORS configuration
 origins = [
@@ -28,7 +32,7 @@ async def get_status():
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     contents = await file.read()
-    file_path = f"src/{file.filename}"
+    file_path = f"${UPLOAD_DIR}/{file.filename}"
     with open(file_path, "wb") as f:
         f.write(contents)
     return {"filename": file.filename, "status": "uploaded"}
@@ -37,6 +41,16 @@ async def upload_file(file: UploadFile = File(...)):
 @app.post("/train")
 async def train_model(body: dict):
     print(body)
+    filename = body['filename']
+    urls = body['urls']
+    userId = body['userId']
+    botName = body['botName']
+    botInitialDescription = body['botInitialDescription']
+
+    print(urls, filename, userId)
+    file_path = f"{UPLOAD_DIR}/{filename}"
+    ingest_docs(urls, file_path, userId)
+
     return {"message": "JSON body printed successfully"}
 
 

@@ -1,0 +1,5 @@
+chromadb
+python-dotenv
+langchain==0.0.166
+unstructured
+pypdf
