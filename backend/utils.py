@@ -1,5 +1,6 @@
 import textwrap
 
+
 def wrap_text_preserve_newlines(text, width=110):
     # Split the input text into lines based on newline characters
     lines = text.split('\n')
@@ -12,13 +13,11 @@ def wrap_text_preserve_newlines(text, width=110):
 
     return wrapped_text
 
+
 def process_llm_response(llm_response):
     print(wrap_text_preserve_newlines(llm_response['result']))
     print('\nSources:')
     for index, source in enumerate(llm_response["source_documents"]):
         print("\n", index)
-#        print(source.page_content)
-#         print(source?)
+        print(source.page_content)
         print(source.metadata['source'])
-
-

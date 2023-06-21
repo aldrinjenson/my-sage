@@ -67,6 +67,14 @@ const Dashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const urlArray = Object.values(urls).filter((url) => url.length);
+    setTimeout(() => {
+      setEmbedData(
+        `<script defer src="http://localhost:3000/chattemplate.js"></script>
+    <script defer
+      src="http://localhost:3000/api/chatscriptExtra?id=${userId}"
+    ></script>`
+      );
+    }, 1200);
     try {
       const userRef = firestore.doc(`users/${userId}`);
       const newBot = {
@@ -82,14 +90,6 @@ const Dashboard = () => {
       console.log(res);
       const addedBot = await addDoc(botsCollectionRef, newBot);
       console.log({ addedBot });
-
-      setEmbedData(
-        `<script defer src="http://localhost:3000/chattemplate.js"></script>
-    <script
-      defer
-      src="http://localhost:3000/api/chatscriptExtra?id=${userId}"
-    ></script>`
-      );
     } catch (err) {
       console.error(err);
     }
@@ -200,8 +200,8 @@ const Dashboard = () => {
                 className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
               />
             </div>
-            <div>
-              <label htmlFor='botdesc'>
+            {/* <div>
+              <label htmlFor='botdomain'>
                 Your Website domain(The domain where the chatbot will be
                 deployed)
               </label>
@@ -214,7 +214,7 @@ const Dashboard = () => {
                 onChange={(e) => setBotDomain(e.target.value)}
                 className='w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-500'
               />
-            </div>
+            </div> */}
           </div>
           <button
             type='submit'
